@@ -1,33 +1,40 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-- `src/main.tex` is the entry point for the LaTeX document.
-- `src/style/` contains custom style files (`*.sty`) such as `abstract.sty` and `common.sty`.
-- `src/references/refs.bib` holds bibliography entries used by `\addbibresource`.
-- Root config files include `package.json` and `.textlintrc.json` for linting.
-
-## Build, Test, and Development Commands
+## Build & Lint Commands
 - `npm install` installs the textlint toolchain used for content checks.
-- `npm run lint` runs textlint over `*.md` and `*.tex` files and applies fixes.
-- `npm test` is a placeholder and currently exits with an error.
-- There is no build script in this repository; compile the document with your local LaTeX toolchain (for example, `latexmk -pdf src/main.tex` if available).
+- `npm run lint` runs textlint over `**/*.{md,tex}` files (main quality gate).
+- `npm run lint:fix` runs textlint with auto-fix enabled.
+- To compile a document, run `latexmk` from within the project directory (e.g., `cd projects/abstract && latexmk`). The `.latexmkrc` files configure LuaLaTeX automatically; output goes to `out/`.
 
-## Coding Style & Naming Conventions
-- Keep LaTeX indentation consistent with existing files (2 spaces inside environments).
-- Prefer descriptive labels with prefixes like `fig:`, `tab:`, and `sec:` (see `src/main.tex`).
-- Use `.sty` for shared style helpers and keep them under `src/style/`.
-- Run textlint before submitting changes that touch prose or LaTeX text.
+## Writing Your Paper
 
-## Testing Guidelines
-- No automated tests are defined; use `npm run lint` as the main quality gate.
-- If you add tests in the future, document the command and expected output here.
+### Document entry point
+Each project lives under `projects/<name>/`. Edit `projects/<name>/main.tex` to write your paper.
+
+### Title metadata
+Each project defines its own title macros in its style file. Set them in the preamble of `main.tex` — refer to `projects/<name>/style/` for the available commands.
+
+### Bibliography
+- Add entries to `references/main.bib` using the `authorYYYY` key convention (e.g., `smith2020`).
+- Cite with `\cite{key}` and print the reference list with `\printreferences`.
+- For Japanese-language entries, add `keywords = {ja}` so name delimiters switch to `，` automatically.
+- The style is IEEE (biblatex + biber). Use `@article`, `@inproceedings`, etc.
+
+### Figures and tables
+- Place figures with `\includegraphics` inside a `figure` environment.
+- Use descriptive labels with prefixes: `fig:` for figures, `tab:` for tables, `sec:` for sections.
+- Reference with `\ref{fig:example}` or `\autoref{fig:example}`.
+
+### Japanese writing conventions
+- End sentences with a fullwidth full stop `．` (U+FF0E, not the ASCII period `.`).
+- The textlint rule `ja-no-mixed-period` enforces this automatically.
+- Use `\cite{a,b}` for multiple citations; they render as a single bracketed list `[1,2]`.
+
+### Style files
+- Shared settings (fonts, geometry, headings) are in `shared/style/jp-common.sty`. Avoid editing this unless the change applies to all projects.
+- Project-specific overrides belong in `projects/<name>/style/`.
 
 ## Commit & Pull Request Guidelines
-- Commit history follows Conventional Commits (e.g., `feat: add textlint`), so use `type: summary` format (`feat:`, `fix:`, `chore:`, etc.).
-- Keep commits focused on a single change and include brief rationale in the body if needed.
-- For pull requests, include a short description, list the files touched, and note any LaTeX build steps you ran.
+- Use Conventional Commits format: `type: summary` (e.g., `feat:`, `fix:`, `chore:`).
+- Run `npm run lint` before submitting changes that touch prose or LaTeX text.
 - Follow the organization-level contributing guide linked in `README.md`.
-
-## Notes for Contributors
-- If you add new bibliography entries, keep keys consistent (`authorYYYY` style is a good pattern).
-- Update `README.md` if you introduce new tooling or workflows.
