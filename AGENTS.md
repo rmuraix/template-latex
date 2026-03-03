@@ -11,15 +11,8 @@
 ### Document entry point
 Each project lives under `projects/<name>/`. Edit `projects/<name>/main.tex` to write your paper.
 
-### Title metadata (abstract project)
-Set the following commands in the preamble of `main.tex`:
-```latex
-\title{タイトル}
-\studentid{2500000}       % 学籍番号
-\majorfield{工学}          % 専攻
-\authorname{工芸 太郎}     % 氏名
-\advisor{教授}{工芸 花子}  % 指導教員の役職と氏名
-```
+### Title metadata
+Each project defines its own title macros in its style file. Set them in the preamble of `main.tex` — refer to `projects/<name>/style/` for the available commands.
 
 ### Bibliography
 - Add entries to `references/main.bib` using the `authorYYYY` key convention (e.g., `smith2020`).
