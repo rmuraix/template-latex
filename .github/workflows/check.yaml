@@ -18,18 +18,61 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npm run lint
-  build:
+  detect-changes:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      projects: ${{ steps.changes.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Detect changed projects
+        id: changes
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }})
+          else
+            BEFORE="${{ github.event.before }}"
+            if [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
+              CHANGED=$(git diff --name-only $(git rev-list --max-parents=0 HEAD) HEAD)
+            else
+              CHANGED=$(git diff --name-only "$BEFORE" HEAD)
+            fi
+          fi
+
+          ALL_PROJECTS=$(find projects -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort)
+
+          if echo "$CHANGED" | grep -qE "^(shared/|\.latexmkrc$)"; then
+            AFFECTED="$ALL_PROJECTS"
+          else
+            AFFECTED=$(echo "$CHANGED" | grep "^projects/" | sed 's|projects/\([^/]*\)/.*|\1|' | sort -u)
+          fi
+
+          if [ -z "$AFFECTED" ]; then
+            echo "projects=[]" >> "$GITHUB_OUTPUT"
+          else
+            JSON=$(echo "$AFFECTED" | jq -Rcs 'split("\n") | map(select(length > 0))')
+            echo "projects=$JSON" >> "$GITHUB_OUTPUT"
+          fi
+  build:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.projects != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.detect-changes.outputs.projects) }}
     steps:
       - uses: actions/checkout@v6
       - name: Build LaTeX document
         uses: devcontainers/ci@v0.3
         with:
-          runCmd: cd src && latexmk main.tex
+          runCmd: cd projects/${{ matrix.project }} && latexmk -r ../../.latexmkrc main.tex
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
-          name: document
-          path: src/out/main.pdf
+          name: ${{ matrix.project }}
+          path: projects/${{ matrix.project }}/out/main.pdf

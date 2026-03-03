@@ -23,40 +23,20 @@
   "latex-workshop.latex.outDir": "%DIR%/out",
   "latex-workshop.latex.tools": [
     {
-      "name": "latexmk (pdfLaTeX)",
+      "name": "latexmk",
       "command": "latexmk",
       "args": [
-        "-pdf",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "--output-directory=%OUTDIR%",
-        "%DOC%"
-      ]
-    },
-    {
-      "name": "latexmk (LuaLaTeX)",
-      "command": "latexmk",
-      "args": [
-        "-lualatex",
-        "-interaction=nonstopmode",
-        "-synctex=1",
-        "-file-line-error",
-        "--output-directory=%OUTDIR%",
+        "-r",
+        "%WORKSPACE_FOLDER%/.latexmkrc",
         "%DOC%"
       ]
     }
   ],
   "latex-workshop.latex.recipes": [
     {
-      "name": "pdfLaTeX",
+      "name": "latexmk",
       "tools": [
-        "latexmk (pdfLaTeX)"
-      ]
-    },
-    {
-      "name": "LuaLaTeX",
-      "tools": [
-        "latexmk (LuaLaTeX)"
+        "latexmk"
       ]
     }
   ],

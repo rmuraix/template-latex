@@ -1,4 +1,4 @@
-$ENV{'TEXINPUTS'} = "./style//:./shared//:" . $ENV{'TEXINPUTS'};
+$ENV{'TEXINPUTS'} = "./style//:" . "../../shared/style//:" . $ENV{'TEXINPUTS'};
 $ENV{'BIBINPUTS'} = "./references//:" . $ENV{'BIBINPUTS'};
 
 $pdf_mode = 4;
