@@ -72,7 +72,7 @@ jobs:
         with:
           runCmd: cd projects/${{ matrix.project }} && latexmk -r ../../.latexmkrc main.tex
       - name: Upload PDF artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.project }}
           path: projects/${{ matrix.project }}/out/main.pdf
