@@ -15,7 +15,7 @@
     "lint:fix": "textlint --fix \"**/*.{md,tex}\""
   },
   "dependencies": {
-    "@textlint-ja/textlint-rule-preset-ai-writing": "^1.6.1",
+    "@textlint-ja/textlint-rule-preset-ai-writing": "^1.6.3",
     "textlint": "^15.5.2",
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-filter-rule-comments": "^1.3.0",
