@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup node
         uses: actions/setup-node@v6
         with:
@@ -25,7 +25,7 @@ jobs:
     outputs:
       projects: ${{ steps.changes.outputs.projects }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Detect changed projects
@@ -66,7 +66,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.detect-changes.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build LaTeX document
         uses: devcontainers/ci@v0.3
         with:
